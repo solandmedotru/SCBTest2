@@ -7,16 +7,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
+class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
 
-    private List<String> rowItems;
+    private List<String> listItems;
     private OnRowSelectedListener listener;
+    private ArrayList<Integer> images;
 
-    public RVAdapter(List<String> rowItems, OnRowSelectedListener listener) {
-        this.rowItems = rowItems;
+    RVAdapter(List<String> listItems, OnRowSelectedListener listener, ArrayList<Integer> images) {
+        this.listItems = listItems;
         this.listener = listener;
+        this.images = images;
     }
 
     @Override
@@ -31,7 +34,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
             public void onClick(View view) {
                 int adapterPosition = h.getAdapterPosition();
                 if (adapterPosition != RecyclerView.NO_POSITION) {
-                    listener.onRowSelected(adapterPosition, rowItems.get(adapterPosition));
+                    listener.onRowSelected(adapterPosition);
                 }
             }
         });
@@ -40,24 +43,24 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.text.setText(rowItems.get(position));
-        holder.image.setImageResource(R.mipmap.ic_launcher);
+        holder.text.setText(listItems.get(position));
+        holder.image.setImageResource(images.get(position%4));
     }
 
     @Override
     public int getItemCount() {
-        if (null == rowItems) {
+        if (null == listItems) {
             return 0;
         } else {
-            return rowItems.size();
+            return listItems.size();
         }
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
         TextView text;
 
-        public ViewHolder(View v) {
+        ViewHolder(View v) {
             super(v);
             image = (ImageView) v.findViewById(R.id.rv_image);
             text = (TextView) v.findViewById(R.id.rv_text);
@@ -65,7 +68,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ViewHolder> {
     }
 
     interface OnRowSelectedListener {
-        void onRowSelected(int position, String result);
+        void onRowSelected(int position);
     }
 }
 
